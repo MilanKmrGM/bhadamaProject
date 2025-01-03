@@ -3,11 +3,14 @@ const router = express.Router()
 
 const userController = require('../controllers/userController')
 const verifyToken = require('../middlewares/verifyToken')
-const { generateOTP, verifyOTP } = require('../utils/otpService')
+const { generateOTP, resendOTP, verifyOTP } = require('../utils/otpService')
 
 
 router.route('/otp')
   .post(generateOTP)
+
+router.route('/resend')
+  .post(resendOTP)
 
 router.route('/')
   .get(verifyToken, userController.getAllUsers)

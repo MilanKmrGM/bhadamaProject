@@ -46,6 +46,46 @@ let otps = {}  // temporary OTPs storage
        next(error)
     }
 }
+    const resendOTP = async (req,res, next) => {
+
+      try {
+
+    const { email, phoneNumber } = req.body
+
+    if( !email || !phoneNumber) {
+      throw new CustomError('Email and phoneNumber required for resend', 400)
+  }
+
+
+    const otp = Math.floor(100000 + Math.random()*900000).toString()
+
+    otps[phoneNumber] = { otp, expiresAt: Date.now() + 5*60*1000} // Expires in 5 min
+
+    
+        // Nodemailer transporter
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        })
+
+        // Send otp via gmail
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your OTP',
+            text: `Your OTP is: ${otp}. It is valid for 1.5 minutes`
+        })
+        
+        console.log("otp regenerated and sent")
+        res.status(200).json({email, phoneNumber})
+    } catch (error) {
+        console.error('Error resending OTP:', error)
+       next(error)
+    }
+}
 
 
 
@@ -89,4 +129,4 @@ const verifyOTP = async (req, res, next) => {
 }
 
 
-module.exports = { generateOTP, verifyOTP }
+module.exports = { generateOTP, resendOTP, verifyOTP }
