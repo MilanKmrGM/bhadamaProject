@@ -151,10 +151,11 @@ const updateLocation = async (req, res, next) => {
         if(duplicate && duplicate._id.toString() !== id) {
             throw new CustomError('Owner has already submitted the location or duplicate ownerId', 400)
         } */
-
-       location.roomCounnt = roomCount
+       console.log(roomCount, roomPrice, roomPerson)
+       location.roomCount = roomCount
        location.roomPrice = roomPrice
        location.roomPerson = roomPerson
+    
 
         const updatedLocation = await location.save()
 
@@ -164,6 +165,7 @@ const updateLocation = async (req, res, next) => {
         const locationGroup = await SavedLocationGroup.findOne({userId: ownerId}).populate('savedLocationIds').lean()
 
         // flattening the updated location and creating sorted and grouped updatedLocation
+        console.log(temporaryLocation.roomCount, temporaryLocation.roomPrice, temporaryLocation.roomPerson)
         console.log([temporaryLocation])
         const sortedAndGrouped = [temporaryLocation].flatMap(location => (
             location.roomPrice.map((room) => ({

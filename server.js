@@ -10,6 +10,7 @@ const { connectDB } = require('./config/database')
 const logger = require('./utils/logger')
 const cronJobService = require('./services/cronJobService')
 const errorHandler = require('./middlewares/errorHandler')
+/* const corsMiddleware = require('./config/corsOption') */
 
 // Logging all request
 app.use(logger.logRequest)
